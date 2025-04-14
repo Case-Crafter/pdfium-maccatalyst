@@ -1,0 +1,11 @@
+--- BUILD.gn   2025-04-14 11:17:41
++++ BUILD.gn.p 2025-04-14 11:18:15
+@@ -27,7 +27,7 @@
+ config("pdfium_common_config") {
+   cflags = []
+   cflags_cc = []
+-  ldflags = []
++  ldflags = [ "-Wl,-headerpad_max_install_names" ]
+   include_dirs = [ "." ]
+   defines = []
+ 
