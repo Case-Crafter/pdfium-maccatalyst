@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
 # Check for optional clean flag
 CLEAN=false
 if [[ "$1" == "--clean" ]]; then
@@ -11,7 +13,7 @@ fi
 # Configurable build params
 ARCH=$1       # arm64 or x64
 BUILD_DIR="out/catalyst-$ARCH"
-SOURCE_DIR="$PWD/pdfium-source/pdfium"
+SOURCE_DIR="$ROOT/pdfium-source/pdfium"
 
 # Validate input
 if [[ "$ARCH" != "arm64" && "$ARCH" != "x64" ]]; then
@@ -32,7 +34,10 @@ target_cpu=\"$ARCH\"
 target_environment=\"catalyst\"
 ios_enable_code_signing=false
 is_component_build=false
-use_xcode_clang=true
+# Apple's ld, not lld: as of Xcode 26.6 the SDK reexports libsystem_eligibility,
+# libsystem_sanitizers and libsystem_trial for maccatalyst, but ships no maccatalyst
+# slice in their .tbd files, which lld rejects. Revisit when Apple fixes the SDK.
+use_lld=false
 is_debug=false
 pdf_is_standalone=true
 pdf_enable_v8=false
